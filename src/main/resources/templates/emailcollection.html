@@ -17,11 +17,13 @@
             <h1>Early Access to <span>Psychologypsy</span></h1>
             <p>Join now to get exclusive tarot readings and early insights from our AI-powered bot.</p>
             <p><strong>Subscribe now!</strong></p>
-            <form action="/submit" method="post" th:object="${subscriber}">
-                <input type="email" name="email" placeholder="Enter your email" th:field="*{email}" required>
-                <span class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+            <form id="subscribe-form">
+                <!-- <input type="email" name="email" placeholder="Enter your email" th:field="*{email}" required> -->
+                <!-- <span class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span> -->
+                <input type="email" id="email" name="email" placeholder="Enter your email" required>
                 <button type="submit">Subscribe</button>
             </form>
+            <p id="response-message" style="color: gray; font-size: 1rem; margin-top: 10px;"></p>
             <p class="email-security">Your email is safe with us, we don’t spam.</p>
             <div class="social-icons">
                 <a href="https://www.facebook.com/psychologypsy" target="_blank">
@@ -31,14 +33,52 @@
                     <img src="https://cdn-icons-png.flaticon.com/512/733/733558.png" alt="Instagram">
                 </a>
             </div>
-            <p th:if="${message}" style="color: green;" th:text="${message}"></p>
+            <!-- <p th:if="${message}" style="color: green;" th:text="${message}"></p>
             <p th:if="${createdAt}" style="color: gray; font-size: 1rem; margin-top: 10px;">
                 Submitted on: <span style="color: #555; font-weight: bold;" th:text="${#temporals.format(createdAt, 'yyyy-MM-dd HH:mm:ss z')}"></span>
             </p>
-            <p th:if="${error}" style="color: red;" th:text="${error}"></p>
+            <p th:if="${error}" style="color: red;" th:text="${error}"></p> -->
 
         </div>
             
     </div>
+    
+
+    <script>
+        document.getElementById("subscribe-form").addEventListener("submit", async (event) => {
+            event.preventDefault(); // Prevent default form submission
+
+            const emailInput = document.querySelector("#email"); // Get email input field
+            const messageBox = document.querySelector("#response-message"); // Get response message box
+
+            if (!emailInput.value) {
+                messageBox.innerText = "Please enter a valid email!";
+                messageBox.style.color = "red";
+                return;
+            }
+
+            try {
+                const response = await fetch("http://localhost:8080/api/subscribe", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email: emailInput.value.trim() })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    messageBox.innerText = data.message;
+                    messageBox.style.color = "green";
+                    emailInput.value = ""; // Clear input after success
+                } else {
+                    messageBox.innerText = data.error;
+                    messageBox.style.color = "red";
+                }
+            } catch (error) {
+                messageBox.innerText = "Error connecting to server!";
+                messageBox.style.color = "red";
+            }
+        });
+    </script>
 </body>
 </html>

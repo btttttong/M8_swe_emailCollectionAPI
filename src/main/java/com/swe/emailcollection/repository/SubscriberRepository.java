@@ -10,7 +10,7 @@ public class SubscriberRepository {
 
     public boolean save(Subscriber subscriber) {
         if (subscribers.containsKey(subscriber.getEmail())) {
-            return false; // Prevent duplicate emails
+            return false; // check if Email already exists in the repository
         }
         subscribers.put(subscriber.getEmail(), subscriber);
         return true;
@@ -18,5 +18,9 @@ public class SubscriberRepository {
 
     public Collection<Subscriber> findAll() {
         return subscribers.values();
+    }
+
+    public Subscriber findByEmail(String email) {
+        return subscribers.get(email);
     }
 }
