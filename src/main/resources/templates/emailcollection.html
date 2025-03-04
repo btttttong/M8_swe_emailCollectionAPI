@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Psychologypsy - Early Access</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <div class="overlay">
+        <div class="popup-container">
+            <button class="close-btn">&times;</button>
+            <div class="image-section">
+                <img src="images/phychologysp.png" alt="Psychologypsy Tarot">
+            </div>
+            <h1>Early Access to <span>Psychologypsy</span></h1>
+            <p>Join now to get exclusive tarot readings and early insights from our AI-powered bot.</p>
+            <p><strong>Subscribe now!</strong></p>
+            <form action="/submit" method="post" th:object="${subscriber}">
+                <input type="email" name="email" placeholder="Enter your email" th:field="*{email}" required>
+                <span class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+                <button type="submit">Subscribe</button>
+            </form>
+            <p class="email-security">Your email is safe with us, we don’t spam.</p>
+            <div class="social-icons">
+                <a href="https://www.facebook.com/psychologypsy" target="_blank">
+                    <img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook">
+                </a>
+                <a href="https://www.instagram.com/psychologypsy" target="_blank">
+                    <img src="https://cdn-icons-png.flaticon.com/512/733/733558.png" alt="Instagram">
+                </a>
+            </div>
+            <p th:if="${message}" style="color: green;" th:text="${message}"></p>
+            <p th:if="${createdAt}" style="color: gray; font-size: 1rem; margin-top: 10px;">
+                Submitted on: <span style="color: #555; font-weight: bold;" th:text="${#temporals.format(createdAt, 'yyyy-MM-dd HH:mm:ss z')}"></span>
+            </p>
+            <p th:if="${error}" style="color: red;" th:text="${error}"></p>
+
+        </div>
+            
+    </div>
+</body>
+</html>
