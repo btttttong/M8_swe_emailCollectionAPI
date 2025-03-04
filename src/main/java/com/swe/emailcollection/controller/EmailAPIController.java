@@ -8,12 +8,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/api")
 public class EmailAPIController {
     
     private final SubscriberRepository subscriberRepository;
+    private static final Logger logger = LoggerFactory.getLogger(EmailAPIController.class);
 
     public EmailAPIController(SubscriberRepository subscriberRepository) {
         this.subscriberRepository = subscriberRepository;
@@ -36,10 +39,13 @@ public class EmailAPIController {
         if (clientIp == null) {
             clientIp = "127.0.0.1";  // Localhost fallback
         }
+        
 
         // Create new subscriber
         Subscriber newSubscriber = new Subscriber(email, clientIp);
         subscriberRepository.save(newSubscriber);
+
+        logger.info("Successfully registered email: {} from IP: {} at {}", email, clientIp, newSubscriber.getCreatedAt());
 
         // Prepare success response
         Map<String, String> response = new HashMap<>();
