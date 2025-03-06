@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin Panel - Subscribers</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
+        th { background-color: #f4f4f4; }
+    </style>
+</head>
+<body>
+    <h1>Admin Panel - Subscriber List</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Email</th>
+                <th>IP Address</th>
+                <th>Created At</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="subscriber : ${subscribers}">
+                <td th:text="${subscriber.id}"></td>
+                <td th:text="${subscriber.email}"></td>
+                <td th:text="${subscriber.ipAddress}"></td>
+                <td th:text="${#temporals.format(subscriber.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
