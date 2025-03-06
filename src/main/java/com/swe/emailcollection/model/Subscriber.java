@@ -1,23 +1,34 @@
 package com.swe.emailcollection.model;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import java.time.ZoneId;
+import jakarta.persistence.*;
 import java.time.ZonedDateTime;
 
+@Entity
+@Table(name = "subscribers")
 public class Subscriber {
-    @NotBlank
-    @Email
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO) // Auto-increment ID
+    private Long id;
+
+    @Column(unique = true, nullable = false)
     private String email;
+
+    @Column(nullable = false)
     private ZonedDateTime createdAt;
+
+    @Column(nullable = false)
     private String ipAddress;
+
+    public Subscriber() {} // Required for JPA
 
     public Subscriber(String email, String ipAddress) {
         this.email = email;
-        this.createdAt = ZonedDateTime.now(ZoneId.systemDefault());
+        this.createdAt = ZonedDateTime.now();
         this.ipAddress = ipAddress;
     }
 
+    public Long getId() { return id; }
     public String getEmail() { return email; }
     public ZonedDateTime getCreatedAt() { return createdAt; }
     public String getIpAddress() { return ipAddress; }

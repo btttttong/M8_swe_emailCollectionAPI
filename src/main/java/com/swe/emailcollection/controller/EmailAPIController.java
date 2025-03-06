@@ -5,14 +5,17 @@ import com.swe.emailcollection.repository.SubscriberRepository;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import java.util.HashMap;
+
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.util.Optional;
 
-@RestController
-@RequestMapping("/api")
+@Controller
+@RequestMapping("/")
 public class EmailAPIController {
     
     private final SubscriberRepository subscriberRepository;
@@ -20,6 +23,11 @@ public class EmailAPIController {
 
     public EmailAPIController(SubscriberRepository subscriberRepository) {
         this.subscriberRepository = subscriberRepository;
+    }
+
+    @GetMapping("/")
+    public String home() {
+        return "emailcollection";
     }
 
     @PostMapping("/subscribe")
@@ -31,7 +39,8 @@ public class EmailAPIController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "Email is required."));
         }
 
-        if (subscriberRepository.findByEmail(email) != null) {
+        Optional<Subscriber> existingSubscriber = subscriberRepository.findByEmail(email);
+        if (existingSubscriber.isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("error", "Email already exists."));
         }
 
@@ -41,19 +50,18 @@ public class EmailAPIController {
         }
         
 
-        // Create new subscriber
         Subscriber newSubscriber = new Subscriber(email, clientIp);
         subscriberRepository.save(newSubscriber);
 
         logger.info("Successfully registered email: {} from IP: {} at {}", email, clientIp, newSubscriber.getCreatedAt());
+        String formattedDate = newSubscriber.getCreatedAt()
+            .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
-        // Prepare success response
-        Map<String, String> response = new HashMap<>();
-        response.put("message", "Subscription successful!");
-        response.put("email", email);
-        response.put("ip", clientIp);
-        response.put("timestamp", newSubscriber.getCreatedAt().toString());
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
+                "message", "Subscription successful!",
+                "email", email,
+                "ip", clientIp,
+                "timestamp", formattedDate
+        ));
     }
 }
