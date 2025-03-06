@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,12 +54,14 @@ public class EmailAPIController {
         subscriberRepository.save(newSubscriber);
 
         logger.info("Successfully registered email: {} from IP: {} at {}", email, clientIp, newSubscriber.getCreatedAt());
+        String formattedDate = newSubscriber.getCreatedAt()
+            .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
                 "message", "Subscription successful!",
                 "email", email,
                 "ip", clientIp,
-                "timestamp", newSubscriber.getCreatedAt().toString()
+                "timestamp", formattedDate
         ));
     }
 }
