@@ -26,6 +26,11 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.hibernate.orm:hibernate-community-dialects:6.6.8.Final")
     implementation("org.xerial:sqlite-jdbc:3.42.0.0")
+	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	implementation("org.springframework.boot:spring-boot-starter-actuator")
+    testImplementation("org.mockito:mockito-core")
+    testImplementation("org.junit.jupiter:junit-jupiter-api")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 
 }
 
