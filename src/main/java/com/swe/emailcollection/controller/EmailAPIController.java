@@ -39,6 +39,10 @@ public class EmailAPIController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "Email is required."));
         }
 
+        if (!email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "Invalid email format."));
+        }
+
         Optional<Subscriber> existingSubscriber = subscriberRepository.findByEmail(email);
         if (existingSubscriber.isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("error", "Email already exists."));
