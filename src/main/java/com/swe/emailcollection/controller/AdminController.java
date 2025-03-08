@@ -5,8 +5,10 @@ import com.swe.emailcollection.repository.SubscriberRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @Controller
 public class AdminController {
@@ -18,9 +20,16 @@ public class AdminController {
     }
 
     @GetMapping("/admin")
-    public String adminPage(Model model) {
-        List<Subscriber> subscribers = subscriberRepository.findAll();  
-        model.addAttribute("subscribers", subscribers);
+    public String adminPage(Model model, 
+                            @RequestParam(defaultValue = "0") int page, 
+                            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Subscriber> subscriberPage = subscriberRepository.findAll(pageable);
+
+        model.addAttribute("subscribers", subscriberPage.getContent());  // Current page data
+        model.addAttribute("currentPage", subscriberPage.getNumber());
+        model.addAttribute("totalPages", subscriberPage.getTotalPages());
+
         return "admin";  
     }
 }
